@@ -1,0 +1,270 @@
+@ Test Case1 : 
+------------ 
+Service : SSH
+Client & Server both are on same machine 
+
+Server:
+------ 
+rahuls-MacBook-Pro:NetSecAss3 rsihag$ ./pbproxy -k mykey -l 65535 localhost 22
+
+Resolved IP of Host localhost: 127.0.0.1
+SERVER MODE	| Key: abcd1234abcd1234 | Destination: localhost | Dest. Port: 22 | Proxy Port: 65535
+
+####################################  Got new request ####################################
+DESTINATION PORT : 22
+Encrypted Buffer : ??3??.?ns?沜@?Z߇VC>??.q?
+
+Original Buffer  : SSH-2.0-OpenSSH_7.4
+
+
+Client: 
+------ 
+rahuls-MacBook-Pro:NetSecAss3 rsihag$ ssh -o "ProxyCommand ./pbproxy -k mykey localhost 65535" localhost
+
+Resolved IP of Host localhost: 127.0.0.1
+CLIENT MODE	| Key: abcd1234abcd1234 | Destination: localhost | Dest. Port: 65535
+Password:
+Last login: Sun Nov 12 17:10:52 2017 from 127.0.0.1
+rahuls-MacBook-Pro:~ rsihag$ 
+
+
+
+
+@ Test Case2:
+------------ 
+Service : NetCat 
+Client & Server both are on same machine 
+
+Server:
+------ 
+rahuls-MacBook-Pro:NetSecAss3 rsihag$ ./pbproxy -k mykey -l 65535 localhost 4567
+
+Resolved IP of Host localhost: 127.0.0.1
+SERVER MODE	| Key: abcd1234abcd1234 | Destination: localhost | Dest. Port: 4567 | Proxy Port: 65535
+
+####################################  Got new request ####################################
+DESTINATION PORT : 4567
+Encrypted Buffer : R?qzTYR??8? ????;?2I?d??@8??@?P?;?J\k??
+
+Original Buffer  : testing netcat service using pbproxy. did it work? NC reply! 
+
+Client:
+------ 
+rahuls-MacBook-Pro:NetSecAss3 rsihag$ ./pbproxy -k mykey localhost 65535
+
+Resolved IP of Host localhost: 127.0.0.1
+CLIENT MODE	| Key: abcd1234abcd1234 | Destination: localhost | Dest. Port: 65535
+testing netcat service using pbproxy. did it work? NC reply!
+Works Perfectly dear Client! Our pbproxy is GREAT!
+
+NetCat:
+rahuls-MacBook-Pro:Desktop rsihag$ nc -l -p 4567
+testing netcat service using pbproxy. did it work? NC reply!
+Works Perfectly dear Client! Our pbproxy is GREAT!
+
+
+
+
+@ Test Case3:
+------------ 
+Service : HTTP
+
+Server:
+------ 
+rahuls-MacBook-Pro:NetSecAss3 rsihag$ ./pbproxy -k mykey -l 65535 www.google.com 80
+
+Resolved IP of Host www.google.com: 216.58.217.68
+SERVER MODE	| Key: abcd1234abcd1234 | Destination: www.google.com | Dest. Port: 80 | Proxy Port: 65535
+
+####################################  Got new request ####################################
+DESTINATION PORT : 80
+Encrypted Buffer : ?????,(?v??xȺkW?"???j1?{S??F
+
+Original Buffer  : GET www.google.com HTTP/1.1
+
+Client:
+------ 
+rahuls-MacBook-Pro:NetSecAss3 rsihag$ ./pbproxy -k mykey localhost 65535
+
+Resolved IP of Host localhost: 127.0.0.1
+CLIENT MODE	| Key: abcd1234abcd1234 | Destination: localhost | Dest. Port: 65535
+GET www.google.com HTTP/1.1
+
+HTTP/1.1 404 Not Found
+Content-Type: text/html; charset=UTF-8
+Date: Sun, 12 Nov 2017 22:23:59 GMT
+Server: gws
+Content-Length: 1561
+X-XSS-Protection: 1; mode=block
+X-Frame-Options: SAMEORIGIN
+
+<!DOCTYPE html>
+<html lang=en>
+  <meta charset=utf-8>
+  <meta name=viewport content="initial-scale=1, minimum-scale=1, width=device-width">
+  <title>Error 404 (Not Found)!!1</title>
+  <style>
+    *{margin:0;padding:0}html,code{font:15px/22px arial,sans-serif}html{background:#fff;color:#222;padding:15px}body{margin:7% auto 0;max-width:390px;min-height:180px;padding:30px 0 15px}* > body{background:url(//www.google.com/images/errors/robot.png) 100% 5px no-repeat;padding-right:205px}p{margin:11px 0 22px;overflow:hidden}ins{color:#777;text-decoration:none}a img{border:0}@media screen and (max-width:772px){body{background:none;margin-top:0;max-width:none;padding-right:0}}#logo{background:url(//www.google.com/images/branding/googlelogo/1x/googlelogo_color_150x54dp.png) no-repeat;margin-left:-5px}@media only screen and (min-resolution:192dpi){#logo{background:url(//www.google.com/images/branding/googlelogo/2x/googlelogo_color_150x54dp.png) no-repeat 0% 0%/100% 100%;-moz-border-image:url(//www.google.com/images/branding/googlelogo/2x/googlelogo_color_150x54dp.png) 0}}@media only screen and (-webkit-min-device-pixel-ratio:2){#logo{background:url(//www.google.com/images/branding/googlelogo/2x/googlelogo_color_150x54dp.png) no-repeat;-webkit-background-size:100% 100%}}#logo{display:inline-block;height:54px;width:150px}
+  </style>
+  <a href=//www.google.com/><span id=logo aria-label=Google></span></a>
+  <p><b>404.</b> <ins>That’s an error.</ins>
+  <p>The requested URL <code>/</code> was not found on this server.  <ins>That’s all we know.</ins>
+
+
+
+
+@ Test Case4: Test Case1 on two different machines:
+Service : SSH
+
+Client:
+rahuls-MacBook-Pro:FinalCode rsihag$ ssh -o "ProxyCommand ./pbproxy -k mykey 10.245.206.217 4646" localhost
+
+Resolved IP of Host 10.245.206.217: 10.245.206.217
+CLIENT MODE	| Key: abcd1234abcd1234 | Destination: 10.245.206.217 | Dest. Port: 4646
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+@    WARNING: REMOTE HOST IDENTIFICATION HAS CHANGED!     @
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+IT IS POSSIBLE THAT SOMEONE IS DOING SOMETHING NASTY!
+Someone could be eavesdropping on you right now (man-in-the-middle attack)!
+It is also possible that a host key has just been changed.
+The fingerprint for the ECDSA key sent by the remote host is
+SHA256:kFM1SBeNZW1ntZFJeXl9D3qDG87Ju9dAQieTiZTXtC0.
+Please contact your system administrator.
+Add correct host key in /Users/rsihag/.ssh/known_hosts to get rid of this message.
+Offending ECDSA key in /Users/rsihag/.ssh/known_hosts:1
+ECDSA host key for localhost has changed and you have requested strict checking.
+Host key verification failed.
+
+
+rahuls-MacBook-Pro:FinalCode rsihag$ rm /Users/rsihag/.ssh/known_hosts
+
+rahuls-MacBook-Pro:FinalCode rsihag$ ssh -o "ProxyCommand ./pbproxy -k mykey 10.245.206.217 4646" localhost
+
+Resolved IP of Host 10.245.206.217: 10.245.206.217
+CLIENT MODE	| Key: abcd1234abcd1234 | Destination: 10.245.206.217 | Dest. Port: 4646
+The authenticity of host 'localhost (<no hostip for proxy command>)' can't be established.
+ECDSA key fingerprint is SHA256:kFM1SBeNZW1ntZFJeXl9D3qDG87Ju9dAQieTiZTXtC0.
+Are you sure you want to continue connecting (yes/no)? yes
+Warning: Permanently added 'localhost' (ECDSA) to the list of known hosts.
+rsihag@localhost's password: 
+Permission denied, please try again.
+rsihag@localhost's password: 
+
+rahuls-MacBook-Pro:FinalCode rsihag$ ssh -o "ProxyCommand ./pbproxy -k mykey 10.245.206.217 4646" alok@localhost
+
+Resolved IP of Host 10.245.206.217: 10.245.206.217
+CLIENT MODE	| Key: abcd1234abcd1234 | Destination: 10.245.206.217 | Dest. Port: 4646
+alok@localhost's password: 
+Welcome to Ubuntu 14.04.5 LTS (GNU/Linux 4.4.0-93-generic x86_64)
+
+ * Documentation:  https://help.ubuntu.com/
+
+Your Hardware Enablement Stack (HWE) is supported until April 2019.
+*** System restart required ***
+Last login: Sun Nov 12 07:09:19 2017 from localhost
+alok@alok-ubuntu:~$ ls
+30x        CDE       DelsDetect  Documents  Dropbox     history   Lab-PC             Music     out_sim   R      Real      Setups       Templates
+anaconda3  client.c  Desktop     Downloads  header.txt  history1  MBuntu-Wallpapers  out_real  Pictures  rahul  Research  Simulations  VPN
+alok@alok-ubuntu:~$ cat rahul/client.c 
+
+Server:
+alok@alok-ubuntu:~/rahul/ass3/FinalCode/FinalCode$ ./pbproxy -k mykey -l 4646 localhost 22
+
+Resolved IP of Host localhost: 127.0.0.1
+SERVER MODE	| Key: abcd1234abcd1234 | Destination: localhost | Dest. Port: 22 | Proxy Port: 4646
+
+####################################  Got new request ####################################
+
+Encrypted Buffer : �T�;���
+                          ��~|~��N9C|������39
+
+Original Buffer  : SSH-2.0-OpenSSH_7.4
+
+
+Encrypted Buffer : ���p"
+
+
+@ Test Case5: Test Case2 on two different machines:
+Service : Netcat
+
+Client:
+rahuls-MacBook-Pro:FinalCode rsihag$ ./pbproxy -k mykey 10.245.206.217 4646
+
+Resolved IP of Host 10.245.206.217: 10.245.206.217
+CLIENT MODE	| Key: abcd1234abcd1234 | Destination: 10.245.206.217 | Dest. Port: 4646
+NC testing
+
+NC Here it works!
+
+Server:
+alok@alok-ubuntu:~/rahul/ass3/FinalCode/FinalCode$ ./pbproxy -k mykey -l 4646 localhost 8989
+
+Resolved IP of Host localhost: 127.0.0.1
+SERVER MODE	| Key: abcd1234abcd1234 | Destination: localhost | Dest. Port: 8989 | Proxy Port: 4646
+
+####################################  Got new request ####################################
+
+Encrypted Buffer : �hў�����1VF�&
+
+
+Original Buffer  : NC testing
+
+
+NetCat on Server:
+alok@alok-ubuntu:~/rahul/ass3$ nc -l -p 8989
+NC testing
+  
+NC Here it works!
+
+
+
+
+@ Test Case6: Test Case3 on two different machines:
+Service: HTTP
+
+Client:
+rahuls-MacBook-Pro:FinalCode rsihag$ ./pbproxy -k mykey 10.245.206.217 4646
+
+Resolved IP of Host 10.245.206.217: 10.245.206.217
+CLIENT MODE	| Key: abcd1234abcd1234 | Destination: 10.245.206.217 | Dest. Port: 4646
+GET www.google.com HTTP/1.1
+
+HTTP/1.1 404 Not Found
+Content-Type: text/html; charset=UTF-8
+Date: Sun, 12 Nov 2017 23:34:40 GMT
+Server: gws
+Content-Length: 1561
+X-XSS-Protection: 1; mode=block
+X-Frame-Options: SAMEORIGIN
+
+<!DOCTYPE html>
+<html lang=en>
+  <meta charset=utf-8>
+  <meta name=viewport content="initial-scale=1, minimum-scale=1, width=device-width">
+  <title>Error 404 (Not Found)!!1</title>
+  <style>
+    *{margin:0;padding:0}html,code{font:15px/22px arial,sans-serif}html{background:#fff;color:#222;padding:15px}body{margin:7% auto 0;max-width:390px;min-height:180px;padding:30px 0 15px}* > body{background:url(//www.google.com/images/errors/robot.png) 100% 5px no-repeat;padding-right:205px}p{margin:11px 0 22px;overflow:hidden}ins{color:#777;text-decoration:none}a img{border:0}@media screen and (max-width:772px){body{background:none;margin-top:0;max-width:none;padding-right:0}}#logo{background:url(//www.google.com/images/branding/googlelogo/1x/googlelogo_color_150x54dp.png) no-repeat;margin-left:-5px}@media only screen and (min-resolution:192dpi){#logo{background:url(//www.google.com/images/branding/googlelogo/2x/googlelogo_color_150x54dp.png) no-repeat 0% 0%/100% 100%;-moz-border-image:url(//www.google.com/images/branding/googlelogo/2x/googlelogo_color_150x54dp.png) 0}}@media only screen and (-webkit-min-device-pixel-ratio:2){#logo{background:url(//www.google.com/images/branding/googlelogo/2x/googlelogo_color_150x54dp.png) no-repeat;-webkit-background-size:100% 100%}}#logo{display:inline-block;height:54px;width:150px}
+  </style>
+  <a href=//www.google.com/><span id=logo aria-label=Google></span></a>
+  <p><b>404.</b> <ins>That’s an error.</ins>
+  <p>The requested URL <code>/</code> was not found on this server.  <ins>That’s all we know.</ins>
+
+
+Server:
+alok@alok-ubuntu:~/rahul/ass3/FinalCode/FinalCode$ ./pbproxy -k mykey -l 4646 www.google.com 80
+
+Resolved IP of Host www.google.com: 216.58.217.68
+SERVER MODE	| Key: abcd1234abcd1234 | Destination: www.google.com | Dest. Port: 80 | Proxy Port: 4646
+
+####################################  Got new request ####################################
+
+o�crypted Buffer : ;�%�r��Z���u)X�Sk�23��?�V
+
+Original Buffer  : GET www.google.com HTTP/1.1
+
+
+Encrypted Buffer : �X����G�
+
+
+Stress Tests: All the above test cases have been tested using large buffers (read/write > 2500+ lines in files / cat) aggressively and no bugs have been found. pbproxy works perfectly.
+-------------
