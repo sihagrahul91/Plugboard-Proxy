@@ -78,7 +78,7 @@ For more test cases refer, testing.txt
 
 Testing:
 --------
-Testing has been done thoroughly and all the test case are included in testing.txt file. pbproxy has been tested against stress tests and all worked.
+Testing has been done thoroughly and all the test cases are included in testing.txt file. pbproxy has been tested against stress tests and all worked.
 Testing has been done both on single machine and two machines (MacOS - Ubuntu).
 
 References:
